@@ -78,3 +78,68 @@ input, textarea, select {
 }
 fieldset { border: 1px solid var(--border); border-radius: 8px; padding: .75rem; margin: 0; }
 legend { font-size: .85rem; color: var(--muted); padding: 0 .5rem; }
+/* ---- Fase 3: detalle de proyecto ---- */
+.title-row { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; }
+
+.tabs {
+  display: flex; gap: .25rem; margin-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+.tab {
+  background: none; border: none; color: var(--muted);
+  padding: .6rem 1rem; cursor: pointer; font-size: .95rem;
+  border-bottom: 2px solid transparent;
+}
+.tab:hover { color: var(--text); }
+.tab-active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+
+.tab-content { min-height: 200px; }
+
+.section-list { display: grid; gap: 1.25rem; margin-top: 1.25rem; }
+.section-item h3 { font-size: 1rem; color: var(--accent); margin-bottom: .4rem; }
+.section-item textarea { resize: vertical; min-height: 80px; }
+
+.stack-chips { display: flex; gap: .5rem; flex-wrap: wrap; margin: .5rem 0 1rem; }
+.chip {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 999px; padding: .2rem .8rem; font-size: .8rem; color: var(--muted);
+}
+/* ---- Fase 4: requerimientos ---- */
+.req-toolbar {
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: .75rem; margin-bottom: 1rem;
+}
+.filtros { display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; }
+.filtros select { width: auto; margin-top: 0; }
+
+.req-list { display: grid; gap: 1rem; }
+.req-card { position: relative; }
+.req-head { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; margin-bottom: .5rem; }
+.req-code { font-family: monospace; font-weight: 700; color: var(--accent); }
+.req-actions { margin-left: auto; display: flex; gap: .35rem; }
+
+.badge {
+  font-size: .72rem; padding: .15rem .6rem; border-radius: 999px;
+  border: 1px solid var(--border); color: var(--muted);
+}
+.badge-alta { background: #7f1d1d; color: #fecaca; border-color: #7f1d1d; }
+.badge-media { background: #78350f; color: #fde68a; border-color: #78350f; }
+.badge-baja { background: #14532d; color: #bbf7d0; border-color: #14532d; }
+.badge-estado-borrador { background: var(--surface); }
+.badge-estado-aprobado { background: #1e3a8a; color: #bfdbfe; border-color: #1e3a8a; }
+.badge-estado-implementado { background: #581c87; color: #e9d5ff; border-color: #581c87; }
+.badge-estado-verificado { background: #065f46; color: #a7f3d0; border-color: #065f46; }
+
+.btn-mini { padding: .2rem .55rem; font-size: .78rem; }
+
+.criterios { margin-top: .75rem; }
+.criterio-list { list-style: none; margin: 0 0 .5rem; padding: 0; display: grid; gap: .35rem; }
+.criterio-list li { display: flex; align-items: center; gap: .5rem; }
+.criterio-item { display: flex; align-items: center; gap: .5rem; flex: 1; margin: 0; font-size: .88rem; }
+.criterio-item input { width: auto; margin-top: 0; }
+.criterio-done span { text-decoration: line-through; color: var(--muted); }
+.criterio-form { display: flex; gap: .5rem; }
+.criterio-form input { margin-top: 0; }
+
+.form-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; }
+@media (max-width: 560px) { .form-row { grid-template-columns: 1fr; } }

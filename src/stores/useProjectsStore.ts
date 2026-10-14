@@ -1,9 +1,10 @@
 import { create } from 'zustand'
-import type { Project } from '../types/proyecto'
+import type { Project, Requerimiento } from '../types/proyecto'
 import type { AppData } from '../types/schema'
 import * as storage from '../services/storage'
 import { createProject } from '../services/proyectoFactory'
 import type { NewProjectInput } from '../services/proyectoFactory'
+import { nextReqCode } from '../services/reqCode'
 
 /** FR-02: Home ordena por última modificación, más reciente primero. */
 function ordenados(proyectos: Project[]): Project[] {
@@ -18,6 +19,18 @@ async function mutateStore(fn: (data: AppData) => void): Promise<Project[]> {
   return ordenados(data.proyectos)
 }
 
+function findProject(data: AppData, id: string): Project | undefined {
+  return data.proyectos.find(p => p.id === id)
+}
+
+export type NewRequerimientoInput = {
+  titulo: string
+  descripcion?: string
+  tipo: Requerimiento['tipo']
+  prioridad: Requerimiento['prioridad']
+  estado: Requerimiento['estado']
+}
+
 interface ProjectsState {
   proyectos: Project[]
   cargado: boolean
@@ -26,6 +39,13 @@ interface ProjectsState {
   updateProject: (id: string, patch: Partial<Project>) => Promise<void>
   deleteProject: (id: string) => Promise<void>
   importProjects: (nuevos: Project[]) => Promise<void>
+  // --- Requerimientos (T33) ---
+  addRequerimiento: (proyectoId: string, input: NewRequerimientoInput) => Promise<void>
+  updateRequerimiento: (proyectoId: string, reqId: string, patch: Partial<Requerimiento>) => Promise<void>
+  deleteRequerimiento: (proyectoId: string, reqId: string) => Promise<void>
+  addCriterio: (proyectoId: string, reqId: string, descripcion: string) => Promise<void>
+  toggleCriterio: (proyectoId: string, reqId: string, criterioId: string) => Promise<void>
+  deleteCriterio: (proyectoId: string, reqId: string, criterioId: string) => Promise<void>
 }
 
 export const useProjectsStore = create<ProjectsState>((set) => ({
@@ -48,7 +68,7 @@ export const useProjectsStore = create<ProjectsState>((set) => ({
 
   updateProject: async (id, patch) => {
     const proyectos = await mutateStore(d => {
-      const p = d.proyectos.find(x => x.id === id)
+      const p = findProject(d, id)
       if (p) Object.assign(p, patch, { actualizadoEn: new Date().toISOString() })
     })
     set({ proyectos })
@@ -64,6 +84,81 @@ export const useProjectsStore = create<ProjectsState>((set) => ({
   importProjects: async (nuevos) => {
     const proyectos = await mutateStore(d => {
       d.proyectos.push(...nuevos)
+    })
+    set({ proyectos })
+  },
+
+  // ---------- Requerimientos ----------
+
+  addRequerimiento: async (proyectoId, input) => {
+    const proyectos = await mutateStore(d => {
+      const p = findProject(d, proyectoId)
+      if (!p) return
+      p.requerimientos.push({
+        id: crypto.randomUUID(),
+        codigo: nextReqCode(p.requerimientos), // FR-05
+        titulo: input.titulo.trim(),
+        descripcion: input.descripcion?.trim() ?? '',
+        tipo: input.tipo,
+        prioridad: input.prioridad,
+        estado: input.estado,
+        criterios: []
+      })
+      p.actualizadoEn = new Date().toISOString()
+    })
+    set({ proyectos })
+  },
+
+  updateRequerimiento: async (proyectoId, reqId, patch) => {
+    const proyectos = await mutateStore(d => {
+      const p = findProject(d, proyectoId)
+      const r = p?.requerimientos.find(x => x.id === reqId)
+      if (p && r) {
+        Object.assign(r, patch)
+        p.actualizadoEn = new Date().toISOString()
+      }
+    })
+    set({ proyectos })
+  },
+
+  deleteRequerimiento: async (proyectoId, reqId) => {
+    const proyectos = await mutateStore(d => {
+      const p = findProject(d, proyectoId)
+      if (p) {
+        p.requerimientos = p.requerimientos.filter(r => r.id !== reqId)
+        p.actualizadoEn = new Date().toISOString()
+      }
+    })
+    set({ proyectos })
+  },
+
+  addCriterio: async (proyectoId, reqId, descripcion) => {
+    const proyectos = await mutateStore(d => {
+      const r = findProject(d, proyectoId)?.requerimientos.find(x => x.id === reqId)
+      if (r && descripcion.trim() !== '') {
+        r.criterios.push({
+          id: crypto.randomUUID(),
+          descripcion: descripcion.trim(),
+          cumplido: false
+        })
+      }
+    })
+    set({ proyectos })
+  },
+
+  toggleCriterio: async (proyectoId, reqId, criterioId) => {
+    const proyectos = await mutateStore(d => {
+      const r = findProject(d, proyectoId)?.requerimientos.find(x => x.id === reqId)
+      const c = r?.criterios.find(x => x.id === criterioId)
+      if (c) c.cumplido = !c.cumplido
+    })
+    set({ proyectos })
+  },
+
+  deleteCriterio: async (proyectoId, reqId, criterioId) => {
+    const proyectos = await mutateStore(d => {
+      const r = findProject(d, proyectoId)?.requerimientos.find(x => x.id === reqId)
+      if (r) r.criterios = r.criterios.filter(c => c.id !== criterioId)
     })
     set({ proyectos })
   }
