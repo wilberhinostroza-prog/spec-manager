@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import type { Project } from '../../types/proyecto'
 import { useProjectsStore } from '../../stores/useProjectsStore'
 import { ConfirmDialog } from '../common/ConfirmDialog'
+import { ExportMenu } from '../common/ExportMenu'
 
 export function ProjectHeader({ proyecto }: { proyecto: Project }) {
   const deleteProject = useProjectsStore(s => s.deleteProject)
@@ -21,6 +22,7 @@ export function ProjectHeader({ proyecto }: { proyecto: Project }) {
         <h1>{proyecto.nombre}</h1>
       </div>
       <div className="header-actions">
+        <ExportMenu proyecto={proyecto} />
         <button className="btn btn-danger" onClick={() => setConfirmando(true)}>
           Eliminar
         </button>

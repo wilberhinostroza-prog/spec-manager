@@ -150,3 +150,17 @@ legend { font-size: .85rem; color: var(--muted); padding: 0 .5rem; }
   padding: .3rem 0; font-size: .88rem; border-bottom: 1px dashed var(--border);
 }
 .crit-edit-row:last-of-type { border-bottom: none; }
+/* ---- Fase 6: exportar ---- */
+.export-menu { position: relative; display: inline-flex; align-items: center; gap: .5rem; }
+.dropdown {
+  position: absolute; top: calc(100% + 4px); right: 0; z-index: 20;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; overflow: hidden; min-width: 180px;
+  display: flex; flex-direction: column;
+}
+.dropdown button {
+  background: none; border: none; color: var(--text);
+  padding: .6rem 1rem; text-align: left; cursor: pointer; font-size: .88rem;
+}
+.dropdown button:hover { background: var(--bg); color: var(--accent); }
+.export-msg { font-size: .8rem; }
