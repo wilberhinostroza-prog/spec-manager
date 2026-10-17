@@ -143,3 +143,10 @@ legend { font-size: .85rem; color: var(--muted); padding: 0 .5rem; }
 
 .form-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; }
 @media (max-width: 560px) { .form-row { grid-template-columns: 1fr; } }
+/* ---- Fase 5: historias ---- */
+.historia-body { margin: 0; font-size: .95rem; flex: 1; }
+.crit-edit-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: .3rem 0; font-size: .88rem; border-bottom: 1px dashed var(--border);
+}
+.crit-edit-row:last-of-type { border-bottom: none; }

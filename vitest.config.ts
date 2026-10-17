@@ -6,6 +6,8 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: './src/test/setup.ts',
-    pool: 'threads'
+    pool: 'threads',
+    fileParallelism: false,  // un archivo de test a la vez
+    maxWorkers: 1
   }
 })

@@ -5,6 +5,7 @@ import { ProjectHeader } from './ProjectHeader'
 import { Tabs, type TabId } from './Tabs'
 import { ResumenTab } from './ResumenTab'
 import { ReqsTab } from './ReqsTab'
+import { HistoriasTab } from '../../stores/HistoriasTab'
 
 export function ProjectDetail() {
   const { id } = useParams<{ id: string }>()
@@ -39,11 +40,7 @@ export function ProjectDetail() {
       <main className="tab-content">
         {tab === 'resumen' && <ResumenTab proyecto={proyecto} />}
         {tab === 'requerimientos' && <ReqsTab proyecto={proyecto} />}
-        {tab === 'historias' && (
-          <div className="empty-state">
-            <p className="muted">Historias en construcción (Fase 5).</p>
-          </div>
-        )}
+        {tab === 'historias' && <HistoriasTab proyecto={proyecto} />}
       </main>
     </div>
   )
