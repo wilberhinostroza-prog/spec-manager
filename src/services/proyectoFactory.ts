@@ -1,4 +1,5 @@
 import type { Project, Seccion, SeccionTipo } from '../types/proyecto'
+import { uuid } from './uuid'
 
 interface SeccionDefault {
   tipo: SeccionTipo
@@ -27,14 +28,14 @@ export interface NewProjectInput {
 export function createProject(input: NewProjectInput): Project {
   const ahora = new Date().toISOString()
   const secciones: Seccion[] = SECCIONES_DEFAULT.map(s => ({
-    id: crypto.randomUUID(),
+    id: uuid(),
     tipo: s.tipo,
     titulo: s.titulo,
     contenido: ''
   }))
 
   return {
-    id: crypto.randomUUID(),
+    id: uuid(),
     nombre: input.nombre.trim(),
     descripcion: input.descripcion?.trim() ?? '',
     stack: {

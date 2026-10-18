@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import type { Criterio, Historia } from '../../types/proyecto'
 import { useProjectsStore } from '../../stores/useProjectsStore'
+import { uuid } from '../../services/uuid'
 
 interface Props {
   proyectoId: string
@@ -26,7 +27,7 @@ export function HistoriaForm({ proyectoId, historia, onClose }: Props) {
     e.preventDefault()
     if (nuevoCriterio.trim() === '') return
     setCriterios([...criterios, {
-      id: crypto.randomUUID(),
+      id: uuid(),
       descripcion: nuevoCriterio.trim(),
       cumplido: false
     }])

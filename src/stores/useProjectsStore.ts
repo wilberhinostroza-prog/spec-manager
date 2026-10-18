@@ -5,6 +5,7 @@ import * as storage from '../services/storage'
 import { createProject } from '../services/proyectoFactory'
 import type { NewProjectInput } from '../services/proyectoFactory'
 import { nextReqCode } from '../services/reqCode'
+import { uuid } from '../services/uuid'
 
 /** FR-02: Home ordena por última modificación, más reciente primero. */
 function ordenados(proyectos: Project[]): Project[] {
@@ -115,7 +116,7 @@ export const useProjectsStore = create<ProjectsState>((set) => ({
       const p = findProject(d, proyectoId)
       if (!p) return
       p.requerimientos.push({
-        id: crypto.randomUUID(),
+        id: uuid(),
         codigo: nextReqCode(p.requerimientos), // FR-05
         titulo: input.titulo.trim(),
         descripcion: input.descripcion?.trim() ?? '',
@@ -156,7 +157,7 @@ export const useProjectsStore = create<ProjectsState>((set) => ({
     const proyectos = await mutateStore(d => {
       const r = findProject(d, proyectoId)?.requerimientos.find(x => x.id === reqId)
       if (r && descripcion.trim() !== '') {
-        r.criterios.push({ id: crypto.randomUUID(), descripcion: descripcion.trim(), cumplido: false })
+        r.criterios.push({ id: uuid(), descripcion: descripcion.trim(), cumplido: false })
       }
     })
     set({ proyectos })
@@ -186,14 +187,14 @@ export const useProjectsStore = create<ProjectsState>((set) => ({
       const p = findProject(d, proyectoId)
       if (!p) return
       p.historias.push({
-        id: crypto.randomUUID(),
+        id: uuid(),
         como: input.como.trim(),
         quiero: input.quiero.trim(),
         para: input.para.trim(),
         criterios: input.criterios
           .filter(c => c.descripcion.trim() !== '')
           .map(c => ({
-            id: c.id ?? crypto.randomUUID(),
+            id: c.id ?? uuid(),
             descripcion: c.descripcion.trim(),
             cumplido: c.cumplido
           }))
@@ -230,7 +231,7 @@ export const useProjectsStore = create<ProjectsState>((set) => ({
     const proyectos = await mutateStore(d => {
       const h = findProject(d, proyectoId)?.historias.find(x => x.id === historiaId)
       if (h && descripcion.trim() !== '') {
-        h.criterios.push({ id: crypto.randomUUID(), descripcion: descripcion.trim(), cumplido: false })
+        h.criterios.push({ id: uuid(), descripcion: descripcion.trim(), cumplido: false })
       }
     })
     set({ proyectos })
