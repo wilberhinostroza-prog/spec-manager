@@ -15,6 +15,7 @@ export function NewProjectDialog({ onClose }: Props) {
   const [backend, setBackend] = useState('')
   const [db, setDb] = useState('')
   const [error, setError] = useState('')
+  const [guardando, setGuardando] = useState(false)
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -22,8 +23,15 @@ export function NewProjectDialog({ onClose }: Props) {
       setError('El nombre es obligatorio.')
       return
     }
-    const proyecto = await addProject({ nombre, descripcion, frontend, backend, db })
-    navigate(`/proyecto/${proyecto.id}`)
+    setGuardando(true)
+    setError('')
+    try {
+      const proyecto = await addProject({ nombre, descripcion, frontend, backend, db })
+      navigate(`/proyecto/${proyecto.id}`)
+    } catch (err) {
+      setError('No se pudo guardar: ' + (err instanceof Error ? err.message : String(err)))
+      setGuardando(false)
+    }
   }
 
   return (
@@ -53,7 +61,9 @@ export function NewProjectDialog({ onClose }: Props) {
         </fieldset>
 
         <div className="dialog-actions">
-          <button type="submit" className="btn btn-primary">Crear proyecto</button>
+          <button type="submit" className="btn btn-primary" disabled={guardando}>
+            {guardando ? 'Guardando...' : 'Crear proyecto'}
+          </button>
           <button type="button" className="btn" onClick={onClose}>Cancelar</button>
         </div>
       </form>
