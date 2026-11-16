@@ -4,11 +4,13 @@ import type { Project } from '../../types/proyecto'
 import { useProjectsStore } from '../../stores/useProjectsStore'
 import { ConfirmDialog } from '../common/ConfirmDialog'
 import { ExportMenu } from '../common/ExportMenu'
+import { EditProjectDialog } from './EditProjectDialog'
 
 export function ProjectHeader({ proyecto }: { proyecto: Project }) {
   const deleteProject = useProjectsStore(s => s.deleteProject)
   const navigate = useNavigate()
   const [confirmando, setConfirmando] = useState(false)
+  const [editando, setEditando] = useState(false)
 
   const onEliminar = async () => {
     await deleteProject(proyecto.id)
@@ -23,6 +25,7 @@ export function ProjectHeader({ proyecto }: { proyecto: Project }) {
       </div>
       <div className="header-actions">
         <ExportMenu proyecto={proyecto} />
+        <button className="btn" onClick={() => setEditando(true)}>Editar info</button>
         <button className="btn btn-danger" onClick={() => setConfirmando(true)}>
           Eliminar
         </button>
@@ -33,6 +36,9 @@ export function ProjectHeader({ proyecto }: { proyecto: Project }) {
         onConfirm={onEliminar}
         onCancel={() => setConfirmando(false)}
       />
+      {editando && (
+        <EditProjectDialog proyecto={proyecto} onClose={() => setEditando(false)} />
+      )}
     </header>
   )
 }

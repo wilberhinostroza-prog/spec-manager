@@ -53,6 +53,7 @@ interface ProjectsState {
   updateProject: (id: string, patch: Partial<Project>) => Promise<void>
   deleteProject: (id: string) => Promise<void>
   importProjects: (nuevos: Project[]) => Promise<void>
+  duplicateProject: (id: string) => Promise<Project | null>
   // --- Requerimientos (Fase 4) ---
   addRequerimiento: (proyectoId: string, input: NewRequerimientoInput) => Promise<void>
   updateRequerimiento: (proyectoId: string, reqId: string, patch: Partial<Requerimiento>) => Promise<void>
@@ -107,6 +108,36 @@ export const useProjectsStore = create<ProjectsState>((set) => ({
       d.proyectos.push(...nuevos)
     })
     set({ proyectos })
+  },
+    duplicateProject: async (id) => {
+    let copia: Project | null = null
+    const proyectos = await mutateStore(d => {
+      const original = findProject(d, id)
+      if (!original) return
+      const ahora = new Date().toISOString()
+      // Clon profundo vía JSON (compatible con navegadores viejos, sin structuredClone)
+      const clon = JSON.parse(JSON.stringify(original)) as Project
+      clon.id = uuid()
+      clon.nombre = `Copia de ${original.nombre}`
+      clon.creadoEn = ahora
+      clon.actualizadoEn = ahora
+      // Regenerar TODOS los ids anidados (evita colisiones con el original)
+      clon.secciones = clon.secciones.map(s => ({ ...s, id: uuid() }))
+      clon.requerimientos = clon.requerimientos.map(r => ({
+        ...r,
+        id: uuid(),
+        criterios: r.criterios.map(c => ({ ...c, id: uuid() }))
+      }))
+      clon.historias = clon.historias.map(h => ({
+        ...h,
+        id: uuid(),
+        criterios: h.criterios.map(c => ({ ...c, id: uuid() }))
+      }))
+      d.proyectos.push(clon)
+      copia = clon
+    })
+    set({ proyectos })
+    return copia
   },
 
   // ---------- Requerimientos ----------
